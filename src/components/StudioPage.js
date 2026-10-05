@@ -23,7 +23,9 @@ function useTilt() {
   const onMouseLeave = () => { rx.set(0); ry.set(0); };
   return { ref, onMouseMove, onMouseLeave, style: { rotateX: srx, rotateY: sry, transformPerspective: 800 } };
 }
-function Item({ children, className = '', as = 'div', tilt = false, ...rest }) { const C = motion[as]; const t = useTilt(); const tiltProps = tilt ? t : {}; return <C className={className} variants={staggerChild} {...tiltProps} {...rest}>{children}</C>; }
+function TiltItem({ children, className = '', as = 'div', ...rest }) { const C = motion[as]; const t = useTilt(); return <C className={className} variants={staggerChild} {...t} {...rest}>{children}</C>; }
+// Plain items vastly outnumber tilting ones — keep them hook-light so idle springs don't add per-frame cost site-wide.
+function Item({ children, className = '', as = 'div', tilt = false, ...rest }) { if (tilt) return <TiltItem className={className} as={as} {...rest}>{children}</TiltItem>; const C = motion[as]; return <C className={className} variants={staggerChild} {...rest}>{children}</C>; }
 
 // Cinematic mask reveal: content slides up out of a clipped box instead of a plain fade.
 function Mask({ children, as = 'span', className = '', delay = 0, trigger = 'scroll' }) {
