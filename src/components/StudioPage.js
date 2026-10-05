@@ -10,7 +10,7 @@ const EASE = [.22, 1, .36, 1];
 const staggerParent = { hidden: {}, show: { transition: { staggerChildren: 0.09, delayChildren: 0.04 } } };
 const staggerChild = { hidden: { opacity: 0, y: 22 }, show: { opacity: 1, y: 0, transition: { duration: .6, ease: EASE } } };
 
-function Photo({ id, alt, className = '' }) { return <img className={className} src={imageUrl(id)} alt={alt} loading="lazy" onError={e => { e.currentTarget.style.background = '#252725'; e.currentTarget.removeAttribute('src'); }} />; }
+function Photo({ id, alt, className = '', eager = false }) { return <img className={className} src={imageUrl(id)} alt={alt} loading={eager ? 'eager' : 'lazy'} fetchPriority={eager ? 'high' : 'auto'} onError={e => { e.currentTarget.style.background = '#252725'; e.currentTarget.removeAttribute('src'); }} />; }
 function Reveal({ children, className = '', delay = 0, x = 0, y = 28, as = 'div', ...rest }) { const C = motion[as]; return <C className={className} initial={{ opacity: 0, x, y }} whileInView={{ opacity: 1, x: 0, y: 0 }} viewport={{ once: true, amount: 0.18 }} transition={{ duration: .7, delay, ease: EASE }} {...rest}>{children}</C>; }
 function Stagger({ children, className = '' }) { return <motion.div className={className} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} variants={staggerParent}>{children}</motion.div>; }
 function Intro({ children, className = '' }) { return <motion.div className={className} initial="hidden" animate="show" variants={staggerParent}>{children}</motion.div>; }
@@ -75,7 +75,7 @@ function Hero() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 140]);
   return <section className="hero" ref={ref}>
-    <motion.div className="hero-media" style={{ y: parallaxY }} initial={{ scale: 1.09 }} animate={{ scale: 1 }} transition={{ duration: 1.8, ease: [.2, .7, .2, 1] }}><Photo className="hero-photo" id="photo-1492144534655-ae79c964c9d7" alt="Detailer carefully applying a finish treatment to a vehicle" /></motion.div>
+    <motion.div className="hero-media" style={{ y: parallaxY }} initial={{ scale: 1.09 }} animate={{ scale: 1 }} transition={{ duration: 1.8, ease: [.2, .7, .2, 1] }}><Photo className="hero-photo" id="photo-1492144534655-ae79c964c9d7" alt="Detailer carefully applying a finish treatment to a vehicle" eager /></motion.div>
     <div className="hero-shade" />
     <div className="hero-content">
       <motion.span className="eyebrow" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .3 }}><i /> AUTOMOTIVE CARE, CONSIDERED</motion.span>
